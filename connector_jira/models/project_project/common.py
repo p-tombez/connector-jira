@@ -75,10 +75,11 @@ class JiraProjectProject(models.Model):
     @api.model
     def create(self, values):
         record = super().create(values)
-        if not record.jira_key:
-            raise exceptions.UserError(
-                _('The JIRA Key is mandatory in order to export a project')
-            )
+        if not self.env.context.get('connector_no_export', False):
+            if not record.jira_key:
+                raise exceptions.UserError(
+                    _('The JIRA Key is mandatory in order to export a project')
+                )
         return record
 
     @api.multi
